@@ -58,7 +58,7 @@ mkdir api webapp
 2. **Install Dependencies**:
    - Install Express and other necessary dependencies:
    ```bash
-   npm install express
+   npm install express.
    ```
 3. **Basic API Setup**:
    - Create an `index.js` file to define basic routes (e.g., product listing, order creation).

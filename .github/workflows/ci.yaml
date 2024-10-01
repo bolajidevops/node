@@ -51,7 +51,7 @@ jobs:
       - name: checking the permissions of package.json
         run: |
           ls -al ./webapp/webapp &&
-          ls -al ./app
+          ls -al ./api
       - name: Run WebApp tests
         working-directory: ./webapp/webapp
         run: npm test
