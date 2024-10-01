@@ -94,7 +94,7 @@ The error suggests that the directory C:\Users\DELL\AppData\Roaming\npm does not
 Navigate to C:\Users\DELL\AppData\Roaming in File Explorer.
 Create a new folder named npm.
 Run the npx create-react-app command again:
-bash
+bash aha
 
 npx create-react-app webapp
    
