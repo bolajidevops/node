@@ -20,7 +20,7 @@ The goal is to automate testing, building, and deployment using GitHub Actions, 
 2. **Directory Structure**:
    - Inside the repository, create two directories:
      - `api`: For the backend API.
-     - `webapp`: For the frontend web application.
+     - `webapp`: For the frontend web application
 
 ```bash
 mkdir api webapp

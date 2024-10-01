@@ -1,5 +1,4 @@
 name: CI Workflow
-
 on:
   push:
     branches:
@@ -7,19 +6,16 @@ on:
   pull_request:
     branches:
       - main
-
 jobs:
   api-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Set up Node.js for API
         uses: actions/setup-node@v4
         with:
           node-version: '14'
-
       - name: Cache API dependencies
         uses: actions/cache@v3
         with:
@@ -27,26 +23,21 @@ jobs:
           key: api-node-modules-${{ hashFiles('api/package-lock.json') }}
           restore-keys: |
             api-node-modules-
-
       - name: Install API dependencies
         working-directory: ./api
         run: npm install
-
       - name: Run API tests
         working-directory: ./api
         run: npm test
-
   webapp-tests:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Set up Node.js for WebApp
         uses: actions/setup-node@v4
         with:
           node-version: '14'
-
       - name: Cache WebApp dependencies
         uses: actions/cache@v3
         with:
@@ -54,11 +45,13 @@ jobs:
           key: webapp-node-modules-${{ hashFiles('webapp/package-lock.json') }}
           restore-keys: |
             webapp-node-modules-
-
       - name: Install WebApp dependencies
         working-directory: ./webapp
         run: npm install
-
+      - name: checking the permissions of package.json
+        run: |
+          ls -al ./webapp/webapp &&
+          ls -al ./app
       - name: Run WebApp tests
-        working-directory: ./webapp
+        working-directory: ./webapp/webapp
         run: npm test
