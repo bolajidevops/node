@@ -1,29 +1,64 @@
 name: CI Workflow
 
-on: [push, pull_request]
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   api-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js for API
+        uses: actions/setup-node@v4
         with:
           node-version: '14'
-      - run: npm install
-      - run: npm install mocha --save-dev
-      - run: npm test
+
+      - name: Cache API dependencies
+        uses: actions/cache@v3
+        with:
+          path: ./api/node_modules
+          key: api-node-modules-${{ hashFiles('api/package-lock.json') }}
+          restore-keys: |
+            api-node-modules-
+
+      - name: Install API dependencies
         working-directory: ./api
+        run: npm install
+
+      - name: Run API tests
+        working-directory: ./api
+        run: npm test
 
   webapp-tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js for WebApp
+        uses: actions/setup-node@v4
         with:
           node-version: '14'
-      - run: npm install
-      - run: npm test
+
+      - name: Cache WebApp dependencies
+        uses: actions/cache@v3
+        with:
+          path: ./webapp/node_modules
+          key: webapp-node-modules-${{ hashFiles('webapp/package-lock.json') }}
+          restore-keys: |
+            webapp-node-modules-
+
+      - name: Install WebApp dependencies
         working-directory: ./webapp
+        run: npm install
+
+      - name: Run WebApp tests
+        working-directory: ./webapp
+        run: npm test
