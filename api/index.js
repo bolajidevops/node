@@ -1,10 +1,12 @@
+// index.js
+
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const port = 8000;
 
 app.use(bodyParser.json());
-app.use(express.static('public'));  // To serve static files like images and CSS
+app.use(express.static('public')); // To serve static files like images and CSS
 
 // Mock data for the store
 const products = [
@@ -19,9 +21,6 @@ const products = [
     { id: 9, name: 'Belt', price: 39, image: '/images/belt.jpg' },
     { id: 10, name: 'Boots', price: 99, image: '/images/boots.jpg' }
 ];
-
-let orders = [];
-let cart = [];
 
 // Route: Base Route - Serves the homepage
 app.get('/', (req, res) => {
@@ -50,7 +49,6 @@ app.get('/', (req, res) => {
             header {
               background-color: #222;
               color: white;
-              padding: 20px 0;
               display: flex;
               justify-content: space-between;
               align-items: center;
@@ -141,14 +139,22 @@ app.get('/', (req, res) => {
           </footer>
 
           <script>
-            let cart = [];
+            let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+            function updateCartCount() {
+              document.getElementById('cartCount').textContent = cart.length;
+            }
 
             function addToCart(productId) {
               const product = ${JSON.stringify(products)}.find(p => p.id === productId);
               cart.push(product);
-              document.getElementById('cartCount').textContent = cart.length;
+              localStorage.setItem('cart', JSON.stringify(cart));
+              updateCartCount();
               alert('Added to cart: ' + product.name);
             }
+
+            // Initialize cart count on page load
+            updateCartCount();
           </script>
         </body>
       </html>
@@ -157,41 +163,100 @@ app.get('/', (req, res) => {
 
 // Route: Cart Page
 app.get('/cart', (req, res) => {
-    if (cart.length === 0) {
-        res.send(`
-            <html>
-              <body>
-                <h1>Your Cart is Empty</h1>
-                <a href="/">Go Back to Products</a>
-              </body>
-            </html>
-        `);
-    } else {
-        let cartHTML = cart.map(item => `
-            <div class="cart-item">
-                <img src="${item.image}" alt="${item.name}">
-                <h2>${item.name}</h2>
-                <p>$${item.price}</p>
-            </div>
-        `).join('');
+    res.send(`
+        <html>
+          <head>
+            <title>Your Cart - Lasgidi Fashion Store</title>
+            <style>
+              body {
+                font-family: 'Arial', sans-serif;
+                background-color: #fafafa;
+                color: #333;
+                margin: 0;
+                padding: 0;
+                text-align: center;
+              }
+              .cart-item {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 20px;
+              }
+              .cart-item img {
+                width: 100px;
+                margin-right: 20px;
+              }
+              footer {
+                background-color: #222;
+                color: white;
+                padding: 10px 0;
+                margin-top: 20px;
+              }
+            </style>
+          </head>
+          <body>
+            <h1>Your Cart</h1>
+            <div id="cartItems"></div>
+            <p id="totalPrice"></p>
+            <a href="/">Go Back to Products</a>
+            <footer>
+              <p>&copy; 2024 Lasgidi Fashion Store. All rights reserved.</p>
+            </footer>
 
-        res.send(`
-            <html>
-              <body>
-                <h1>Your Cart</h1>
-                <div class="cart-items">${cartHTML}</div>
-                <p>Total: $${cart.reduce((total, item) => total + item.price, 0)}</p>
-                <a href="/">Go Back to Products</a>
-              </body>
-            </html>
-        `);
-    }
+            <script>
+              let cart = JSON.parse(localStorage.getItem('cart')) || [];
+              const cartItemsDiv = document.getElementById('cartItems');
+              const totalPriceP = document.getElementById('totalPrice');
+
+              if (cart.length === 0) {
+                cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
+              } else {
+                let cartHTML = '';
+                let total = 0;
+                cart.forEach(item => {
+                  cartHTML += \`
+                    <div class="cart-item">
+                      <img src="\${item.image}" alt="\${item.name}">
+                      <div>
+                        <h2>\${item.name}</h2>
+                        <p>$\${item.price}</p>
+                      </div>
+                    </div>
+                  \`;
+                  total += item.price;
+                });
+                cartItemsDiv.innerHTML = cartHTML;
+                totalPriceP.textContent = 'Total: $' + total;
+              }
+            </script>
+          </body>
+        </html>
+    `);
 });
 
 // Route: Voice Order Page
 app.get('/voice-order', (req, res) => {
     res.send(`
     <html>
+      <head>
+        <title>Voice Order - Lasgidi Fashion Store</title>
+        <style>
+          body {
+            font-family: 'Arial', sans-serif;
+            background-color: #fafafa;
+            color: #333;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+          }
+          footer {
+            background-color: #222;
+            color: white;
+            padding: 10px 0;
+            margin-top: 20px;
+          }
+        </style>
+      </head>
       <body>
         <h1>Place Your Order by Voice at Lasgidi Store</h1>
         <button id="voiceButton">
@@ -199,10 +264,14 @@ app.get('/voice-order', (req, res) => {
           Speak Your Order
         </button>
         <div id="order"></div>
+        <a href="/">Go Back to Products</a>
+        <footer>
+          <p>&copy; 2024 Lasgidi Fashion Store. All rights reserved.</p>
+        </footer>
         <script>
           const voiceButton = document.getElementById('voiceButton');
           const orderDiv = document.getElementById('order');
-          
+
           voiceButton.addEventListener('click', () => {
             const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
             recognition.lang = 'en-US';
@@ -214,7 +283,16 @@ app.get('/voice-order', (req, res) => {
 
               const addToCartButton = document.getElementById('addToCart');
               addToCartButton.addEventListener('click', () => {
-                alert('Order added to cart: ' + spokenOrder);
+                // Find the product based on the spoken order
+                const product = ${JSON.stringify(products)}.find(p => p.name.toLowerCase() === spokenOrder.toLowerCase());
+                if (product) {
+                  let cart = JSON.parse(localStorage.getItem('cart')) || [];
+                  cart.push(product);
+                  localStorage.setItem('cart', JSON.stringify(cart));
+                  alert('Order added to cart: ' + product.name);
+                } else {
+                  alert('Product not found: ' + spokenOrder);
+                }
               });
             };
 
@@ -228,6 +306,9 @@ app.get('/voice-order', (req, res) => {
     `);
 });
 
+// Start the server
 app.listen(port, () => {
     console.log(`Lasgidi store API running on http://localhost:${port}`);
 });
+
+module.exports = app; // Export the app after all routes are defined
