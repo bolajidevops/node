@@ -1,18 +1,19 @@
 {
   "name": "ecommerceapp",
   "version": "1.0.0",
-  "description": "this is my E-commerce application ",
+  "description": "this is my E-commerce application",
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "test": "mocha --exit"
+    "test": "mocha --exit",
+    "lint": "eslint ."
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Fumnanya92/E-commerce-Application.git"
   },
   "keywords": [
-    "capt\bs\bstone"
+    "capt\b\bstone"
   ],
   "author": "fumnanya",
   "license": "ISC",
@@ -25,6 +26,7 @@
   },
   "devDependencies": {
     "jest": "^29.7.0",
-    "mocha": "^10.7.3"
+    "mocha": "^10.7.3",
+    "eslint": "^8.53.0"  // Added ESLint for linting
   }
 }

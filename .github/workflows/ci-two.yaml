@@ -1,0 +1,47 @@
+name: Node.js CI with Linting
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Checkout the repository
+      - name: Checkout Code
+        uses: actions/checkout@v3
+
+      # Step 2: Set up Node.js environment
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+
+      # Step 3: Install dependencies
+      - name: Install dependencies
+        run: npm install
+
+      # Step 4: Run linter (eslint)
+      - name: Run ESLint
+        run: npm run lint
+
+      # Step 5: Run tests
+      - name: Run Tests
+        run: npm test
+
+      # Step 6: (Optional) Build the application (if necessary)
+      - name: Build Application
+        run: npm run build
+        if: success()
+
+      # Step 7: (Optional) Start the application for any extra integration tests
+      - name: Start Application
+        run: npm start &
+        if: success()
+
