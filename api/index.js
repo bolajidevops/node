@@ -311,4 +311,4 @@ app.listen(port, () => {
     console.log(`Lasgidi store API running on http://localhost:${port}`);
 });
 
-module.exports = app; // Export the app after all routes are defined
+module.exports = app; // Export the app after all routes are defined.
