@@ -1,26 +1,43 @@
-// index.js
-
 const express = require('express');
 const bodyParser = require('body-parser');
 const app = express();
 const port = 8000;
 
+// Serve static files like images and CSS from the 'public' folder
+app.use(express.static('public')); 
+
 app.use(bodyParser.json());
-app.use(express.static('public')); // To serve static files like images and CSS
 
 // Mock data for the store
 const products = [
     { id: 1, name: 'Stylish Jacket', price: 99, image: '/images/jacket.jpg' },
-    { id: 2, name: 'Casual Sneakers', price: 79, image: '/images/sneakers.jpg' },
-    { id: 3, name: 'Leather Bag', price: 120, image: '/images/bag.jpg' },
-    { id: 4, name: 'Sunglasses', price: 49, image: '/images/sunglasses.jpg' },
-    { id: 5, name: 'Jeans', price: 59, image: '/images/jeans.jpg' },
-    { id: 6, name: 'T-Shirt', price: 29, image: '/images/tshirt.jpg' },
-    { id: 7, name: 'Cap', price: 19, image: '/images/cap.jpg' },
-    { id: 8, name: 'Watch', price: 199, image: '/images/watch.jpg' },
-    { id: 9, name: 'Belt', price: 39, image: '/images/belt.jpg' },
-    { id: 10, name: 'Boots', price: 99, image: '/images/boots.jpg' }
+    { id: 2, name: 'Casual Sneakers', price: 79, image: '/images/sneakers.jpeg' },
+    { id: 3, name: 'Leather Bag', price: 120, image: '/images/bag.jpeg' },
+    { id: 4, name: 'Sunglasses', price: 49, image: '/images/sunglasses.jpeg' },
+    { id: 5, name: 'Jeans', price: 59, image: '/images/jeans.jpeg' },
+    { id: 6, name: 'T-Shirt', price: 29, image: '/images/tshirt.jpeg' },
+    { id: 7, name: 'Cap', price: 19, image: '/images/cap.jpeg' },
+    { id: 8, name: 'Watch', price: 199, image: '/images/watch.jpeg' },
+    { id: 9, name: 'Belt', price: 39, image: '/images/belt.jpeg' },
+    { id: 10, name: 'Boots', price: 99, image: '/images/boots.jpeg' }
 ];
+
+// Mock data for orders
+const orders = [
+    { orderId: 1, productId: 1, quantity: 2 },
+    { orderId: 2, productId: 3, quantity: 1 },
+    { orderId: 3, productId: 5, quantity: 4 }
+];
+
+// Route: GET /products - Returns a list of products
+app.get('/products', (req, res) => {
+    res.status(200).json(products);
+});
+
+// Route: GET /orders - Returns a list of orders
+app.get('/orders', (req, res) => {
+    res.status(200).json(orders);
+});
 
 // Route: Base Route - Serves the homepage
 app.get('/', (req, res) => {
@@ -158,151 +175,6 @@ app.get('/', (req, res) => {
           </script>
         </body>
       </html>
-    `);
-});
-
-// Route: Cart Page
-app.get('/cart', (req, res) => {
-    res.send(`
-        <html>
-          <head>
-            <title>Your Cart - Lasgidi Fashion Store</title>
-            <style>
-              body {
-                font-family: 'Arial', sans-serif;
-                background-color: #fafafa;
-                color: #333;
-                margin: 0;
-                padding: 0;
-                text-align: center;
-              }
-              .cart-item {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                margin: 20px;
-              }
-              .cart-item img {
-                width: 100px;
-                margin-right: 20px;
-              }
-              footer {
-                background-color: #222;
-                color: white;
-                padding: 10px 0;
-                margin-top: 20px;
-              }
-            </style>
-          </head>
-          <body>
-            <h1>Your Cart</h1>
-            <div id="cartItems"></div>
-            <p id="totalPrice"></p>
-            <a href="/">Go Back to Products</a>
-            <footer>
-              <p>&copy; 2024 Lasgidi Fashion Store. All rights reserved.</p>
-            </footer>
-
-            <script>
-              let cart = JSON.parse(localStorage.getItem('cart')) || [];
-              const cartItemsDiv = document.getElementById('cartItems');
-              const totalPriceP = document.getElementById('totalPrice');
-
-              if (cart.length === 0) {
-                cartItemsDiv.innerHTML = '<p>Your cart is empty.</p>';
-              } else {
-                let cartHTML = '';
-                let total = 0;
-                cart.forEach(item => {
-                  cartHTML += \`
-                    <div class="cart-item">
-                      <img src="\${item.image}" alt="\${item.name}">
-                      <div>
-                        <h2>\${item.name}</h2>
-                        <p>$\${item.price}</p>
-                      </div>
-                    </div>
-                  \`;
-                  total += item.price;
-                });
-                cartItemsDiv.innerHTML = cartHTML;
-                totalPriceP.textContent = 'Total: $' + total;
-              }
-            </script>
-          </body>
-        </html>
-    `);
-});
-
-// Route: Voice Order Page
-app.get('/voice-order', (req, res) => {
-    res.send(`
-    <html>
-      <head>
-        <title>Voice Order - Lasgidi Fashion Store</title>
-        <style>
-          body {
-            font-family: 'Arial', sans-serif;
-            background-color: #fafafa;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-          }
-          footer {
-            background-color: #222;
-            color: white;
-            padding: 10px 0;
-            margin-top: 20px;
-          }
-        </style>
-      </head>
-      <body>
-        <h1>Place Your Order by Voice at Lasgidi Store</h1>
-        <button id="voiceButton">
-          <img src="https://img.icons8.com/ios-filled/50/000000/microphone.png" alt="mic icon" />
-          Speak Your Order
-        </button>
-        <div id="order"></div>
-        <a href="/">Go Back to Products</a>
-        <footer>
-          <p>&copy; 2024 Lasgidi Fashion Store. All rights reserved.</p>
-        </footer>
-        <script>
-          const voiceButton = document.getElementById('voiceButton');
-          const orderDiv = document.getElementById('order');
-
-          voiceButton.addEventListener('click', () => {
-            const recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-            recognition.lang = 'en-US';
-            recognition.start();
-
-            recognition.onresult = function(event) {
-              const spokenOrder = event.results[0][0].transcript;
-              orderDiv.innerHTML = "<h2>You said: " + spokenOrder + "</h2><button id='addToCart'>Add to Cart</button>";
-
-              const addToCartButton = document.getElementById('addToCart');
-              addToCartButton.addEventListener('click', () => {
-                // Find the product based on the spoken order
-                const product = ${JSON.stringify(products)}.find(p => p.name.toLowerCase() === spokenOrder.toLowerCase());
-                if (product) {
-                  let cart = JSON.parse(localStorage.getItem('cart')) || [];
-                  cart.push(product);
-                  localStorage.setItem('cart', JSON.stringify(cart));
-                  alert('Order added to cart: ' + product.name);
-                } else {
-                  alert('Product not found: ' + spokenOrder);
-                }
-              });
-            };
-
-            recognition.onerror = function(event) {
-              orderDiv.innerHTML = '<p>Error occurred: ' + event.error + '</p>';
-            };
-          });
-        </script>
-      </body>
-    </html>
     `);
 });
 
