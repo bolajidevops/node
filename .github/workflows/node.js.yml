@@ -51,6 +51,10 @@ jobs:
         # This command will only run if a build script is defined in the package.json
         run: npm run build --if-present
 
-      - name: Run tests
-        # Runs tests as defined in the project's package.json
+      - name: Run WebApp tests
+        working-directory: ./api
         run: npm test
+
+      # - name: Run tests
+        # Runs tests as defined in the project's package.json
+       # run: npm test
