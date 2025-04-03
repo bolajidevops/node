@@ -39,10 +39,6 @@ jobs:
         with:
           node-version: ${{ matrix.node-version }}
 
-      - name: Initialize init
-          # Runs tests as defined in the project's package.json
-        run: npm init
-
       - name: Install dependencies
         # Installs node modules as specified in the project's package-lock.json
         run: npm ci
