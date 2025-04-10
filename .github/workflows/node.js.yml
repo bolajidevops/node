@@ -38,7 +38,7 @@ jobs:
           echo "Job variable: $JOB_VAR"
           echo "Step variable: $STEP_VAR"
 # Defines the jobs that the workflow will execute
-jobs:
+#jobs:
   # Job identifier, can be any name (here it's 'build')
   build:
     # Specifies the type of virtual host environment (runner) to use
