@@ -3,29 +3,6 @@
 # Name of the workflow
 name: Node.js CI
 
-env:
-    GLOBAL_VAR: 'This is a global variable'
-
-  jobs:
-    example_job: 
-      env:
-         JOB_VAR: 'Job variable'
-      runs-on: ubuntu-latest
-      steps:
-        - name: Print global variable
-          env:
-             STEP_VAR: 'Step variable'
-          run: |
-            echo "$GLOBAL_VAR"
-            echo "$JOB_VAR"
-            echo "$STEP_VAR"
-      steps:
-        - name: Print variables
-          run: |
-            echo "Global variable: $GLOBAL_VAR"
-            echo "Job variable: $JOB_VAR"
-            echo "Step variable: $STEP_VAR"
-   
 # Specifies when the workflow should be triggered
 on:
   # Triggers the workflow on 'push' events to the 'main' branch
@@ -37,6 +14,29 @@ on:
     branches:
       - main
 
+env:
+  GLOBAL_VAR: 'This is a global variable'
+
+jobs:
+  example_job:
+    runs-on: ubuntu-latest
+    env:
+      JOB_VAR: 'Job variable'
+
+    steps:
+      - name: Print variables with custom step var
+        env:
+          STEP_VAR: 'Step variable'
+        run: |
+          echo "Global variable: $GLOBAL_VAR"
+          echo "Job variable: $JOB_VAR"
+          echo "Step variable: $STEP_VAR"
+
+      - name: Print variables without step var
+        run: |
+          echo "Global variable: $GLOBAL_VAR"
+          echo "Job variable: $JOB_VAR"
+          echo "Step variable: $STEP_VAR"
 # Defines the jobs that the workflow will execute
 jobs:
   # Job identifier, can be any name (here it's 'build')
