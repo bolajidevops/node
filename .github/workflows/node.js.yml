@@ -7,15 +7,14 @@ env:
     GLOBAL_VAR: 'This is a global variable'
 
   jobs:
-
-  env:
-      JOB_VAR: 'Job variable'
     example_job: 
+      env:
+         JOB_VAR: 'Job variable'
       runs-on: ubuntu-latest
       steps:
-      env:
-          STEP_VAR: 'Step variable'
         - name: Print global variable
+          env:
+             STEP_VAR: 'Step variable'
           run: |
             echo "$GLOBAL_VAR"
             echo "$JOB_VAR"
